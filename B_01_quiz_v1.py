@@ -1,6 +1,8 @@
 import random
 
 # checks users enter yes (y) or no (n)
+
+
 def yes_no(question):
     while True:
         response = input(question).lower()
@@ -22,6 +24,9 @@ def instructions():
 **** Instructions ****
 To begin, you choose the number of questions you would like
 to be asked. Press <enter> for infinite. 
+
+Then you may either customise the operation, or go with the
+default game. (where all operations are included)
 
 Answer the questions, aiming to get as many correct as possible.
 (if you get one wrong the computer will show the correct answer)
@@ -77,7 +82,35 @@ def int_check(question, low=None, high=None, exit_code=None):
         except ValueError:
             print(error)
 
+# Check that users have entered a valid
+# option based on a list
+
+def string_checker(question, valid_ans=("*","+", "-", "/")):
+
+    error = f"Please enter a valid option from the following list: {valid_ans}"
+
+    while True:
+
+        # Get user response and make sure it's lowercase
+        user_response = input(question).lower()
+
+        for item in valid_ans:
+            # check if the user response is a work in the list
+            if item == user_response:
+                return item
+
+            # check if the user response is the same as
+            # the first letter of an item in the list
+            elif user_response == item[0]:
+                return item
+
+            # print error if user does not enter something that is valid
+            print(error)
+            print()
+
 # Generate questions and checks if answer is correct
+
+
 def generate_question():
     # Generate two random numbers
     num1 = random.randint(1, 10)
@@ -103,7 +136,6 @@ def generate_question():
         correct_answer = num1 / num2
         question = f"What is {num1} / {num2}?"
 
-    # displays questions
     print(question)
 
     # get user choice
@@ -147,12 +179,21 @@ if num_questions == "":
     if mode == "infinite":
         num_questions += 1
 
-# Rounds start here
+# ask users if they wish to customize the operation
+default_game == yes_no("Do you want to use default game settings?")
+if default_game == "yes":
+    operation = all
 
-# Rounds heading (base on mode)
-if mode == "infinite":
-    rounds_heading = f"\n✈️✈️Question: {questions_asked + 1} (Infinite mode)✈️✈️"
 else:
-    rounds_heading = f"\n✈️✈️Question: {questions_asked + 1} of {num_questions}✈️✈️"
+    operation = string_checker[valid_ans]
+# How do i change the game settings to only choose one operation
 
-print(rounds_heading)
+# Game start here
+while questions_asked < num_questions:
+    # Rounds heading (base on mode)
+    if mode == "infinite":
+        game_heading = f"\n✈️✈️Question: {questions_asked + 1} (Infinite mode)✈️✈️"
+    else:
+        game_heading = f"\n✈️✈️Question: {questions_asked + 1} of {num_questions}✈️✈️"
+
+    print(game_heading)
