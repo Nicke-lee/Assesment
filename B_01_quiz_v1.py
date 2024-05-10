@@ -85,7 +85,9 @@ def int_check(question, low=None, high=None, exit_code=None):
 # Check that users have entered a valid
 # option based on a list
 
-def string_checker(question, valid_ans=("*","+", "-", "/")):
+
+def string_checker(question, valid_ans=("multiplication", "m", "division",
+                                        "d", "subtraction", "s", "addition", "a")):
 
     error = f"Please enter a valid option from the following list: {valid_ans}"
 
@@ -107,6 +109,7 @@ def string_checker(question, valid_ans=("*","+", "-", "/")):
             # print error if user does not enter something that is valid
             print(error)
             print()
+
 
 # Generate questions and checks if answer is correct
 
@@ -176,17 +179,26 @@ if num_questions == "":
     num_questions = 5
 
 # if user are in infinite mode, increase number of rounds!
-    if mode == "infinite":
-        num_questions += 1
+if mode == "infinite":
+    num_questions += 1
 
-# ask users if they wish to customize the operation
-default_game == yes_no("Do you want to use default game settings?")
+# check if the user want to do basic game settings
+default_game = yes_no("Do you want to keep the basic game settings?")
 if default_game == "yes":
-    operation = all
+    operation = ("m", "d", "s", "a")
 
+# allow users to customise operation if they wish
 else:
-    operation = string_checker[valid_ans]
-# How do i change the game settings to only choose one operation
+    quiz_list = ["multiplication", "m", "division", "d", "subtraction",
+                 "s", "addition", "a"]
+
+    user_choice = string_checker("Choose: ", quiz_list)
+    print("You chose: ", user_choice)
+
+# if user chose to customise their operation
+# only give them one operation
+if default_game == "no":
+    operation == user_choice
 
 # Game start here
 while questions_asked < num_questions:
@@ -197,3 +209,5 @@ while questions_asked < num_questions:
         game_heading = f"\n✈️✈️Question: {questions_asked + 1} of {num_questions}✈️✈️"
 
     print(game_heading)
+
+# Game history / statistics area
