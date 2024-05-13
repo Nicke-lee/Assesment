@@ -155,6 +155,7 @@ print()
 print("✈️ Basic Math ✈️")
 print()
 
+game_history = []
 want_instructions = yes_no("Do you want to read the instructions? ").lower()
 
 # check users enter yes (y) or no (n)
@@ -210,4 +211,28 @@ while questions_asked < num_questions:
 
     print(game_heading)
 
+# How do I continue this game??????????????
+print("What do i do next????")
 # Game history / statistics area
+
+
+# Calculate Statistics
+questions_correct = num_questions - questions_wrong
+percent_won = questions_correct / num_questions * 100
+percent_lost = questions_wrong / num_questions * 100
+
+# Output Game Statistics
+print("🍭🍭🍭Game Statistics🍭🍭🍭")
+print(f" Won: {percent_won:.2f} \t"
+      f" Lost: {percent_lost:.2f} \t")
+
+# Display game history if user want to see it
+see_history = string_checker("\nDo you want to see the game history? ")
+if see_history == "yes":
+    print("\n⌛⌛⌛Game History⌛⌛⌛")
+
+    for item in game_history:
+        print(item)
+
+    print()
+    print("Thanks for playing. ")
