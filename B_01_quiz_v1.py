@@ -27,9 +27,8 @@ to be asked. Press <enter> for infinite.
 
 Then you may either customise the operation, or go with the
 default game. (where all operations are included)
-
 Answer the questions, aiming to get as many correct as possible.
-(if you get one wrong the computer will show the correct answer)
+If you get one wrong, the computer will show the correct answer.
 
 Good luck!
 
@@ -86,29 +85,13 @@ def int_check(question, low=None, high=None, exit_code=None):
 # option based on a list
 
 
-def string_checker(question, valid_ans=("multiplication", "m", "division",
-                                        "d", "subtraction", "s", "addition", "a")):
-
+def string_checker(question, valid_ans):
     error = f"Please enter a valid option from the following list: {valid_ans}"
-
     while True:
-
-        # Get user response and make sure it's lowercase
-        user_response = input(question).lower()
-
-        for item in valid_ans:
-            # check if the user response is a work in the list
-            if item == user_response:
-                return item
-
-            # check if the user response is the same as
-            # the first letter of an item in the list
-            elif user_response == item[0]:
-                return item
-
-            # print error if user does not enter something that is valid
-            print(error)
-            print()
+        response = input(question).lower()
+        if response in valid_ans:
+            return response
+        print(error)
 
 
 # Generate questions and checks if answer is correct
@@ -140,15 +123,12 @@ def generate_question():
         question = f"What is {num1} / {num2}?"
 
     print(question)
-
     # get user choice
-    user_answer = input("Your answer: ")
-
-    if user_answer == correct_answer:
+    user_answer = float(input("Your answer: "))
+    if user_answer - correct_answer < 0.01:
         print("Correct!")
     else:
-        print(f"Wrong! The correct answer is {correct_answer}.")
-
+        print(f"Wrong! The correct answer is {correct_answer:.2f}.")
 
 # Main routine
 print()
@@ -156,6 +136,10 @@ print("✈️ Basic Math ✈️")
 print()
 
 game_history = []
+questions_asked = 0
+correct_answers = 0
+
+# Does users want to read instructions?
 want_instructions = yes_no("Do you want to read the instructions? ").lower()
 
 # check users enter yes (y) or no (n)
@@ -186,7 +170,8 @@ if mode == "infinite":
 # check if the user want to do basic game settings
 default_game = yes_no("Do you want to keep the basic game settings?")
 if default_game == "yes":
-    operation = ("m", "d", "s", "a")
+    operation_list = ["+", "-", "*", "/"]
+    operation = random.choice(operation_list)
 
 # allow users to customise operation if they wish
 else:
@@ -199,7 +184,12 @@ else:
 # if user chose to customise their operation
 # only give them one operation
 if default_game == "no":
-    operation == user_choice
+    operation = user_choice
+
+    questions_asked += 1
+    if generate_question(operation):
+        correct_answers += 1
+
 
 # Game start here
 while questions_asked < num_questions:
@@ -211,28 +201,22 @@ while questions_asked < num_questions:
 
     print(game_heading)
 
+    # get user choice
+    user_answer = float(input("Your answer: "))
+    if user_answer - correct_answer < 0.01:
+        print("Correct!")
+    else:
+        print(f"Wrong! The correct answer is {correct_answer:.2f}.")
+    if questions_asked >= num_questions:
+        break
+
+    # check that they don't want to quit
+    if user_answer == "xxx":
+        # set end_game to use so that outer loop can be
+        end_game = "yes"
+        break
+
 # How do I continue this game??????????????
 print("What do i do next????")
+
 # Game history / statistics area
-
-
-# Calculate Statistics
-questions_correct = num_questions - questions_wrong
-percent_won = questions_correct / num_questions * 100
-percent_lost = questions_wrong / num_questions * 100
-
-# Output Game Statistics
-print("🍭🍭🍭Game Statistics🍭🍭🍭")
-print(f" Won: {percent_won:.2f} \t"
-      f" Lost: {percent_lost:.2f} \t")
-
-# Display game history if user want to see it
-see_history = string_checker("\nDo you want to see the game history? ")
-if see_history == "yes":
-    print("\n⌛⌛⌛Game History⌛⌛⌛")
-
-    for item in game_history:
-        print(item)
-
-    print()
-    print("Thanks for playing. ")
