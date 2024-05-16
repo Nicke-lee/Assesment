@@ -32,8 +32,6 @@ If you get one wrong, the computer will show the correct answer.
 
 Good luck!
 
-NOT FINALIZED INSTRUCTIONS
-
         ''')
 
 
@@ -102,35 +100,33 @@ def generate_question():
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
 
-    # Randomly choose an operation
-    operation = random.choice(['+', '-', '*', '/'])
-
-    # Create and solve the question
-    if operation == '+':
+    if operation == "addition" or operation == "a":
         correct_answer = num1 + num2
         question = f"What is {num1} + {num2}?"
-    elif operation == '-':
+    elif operation == "subtraction" or operation == "s":
         correct_answer = num1 - num2
         question = f"What is {num1} - {num2}?"
-    elif operation == '/':
-        correct_answer = num1 / num2
-        question = f"What is {num1} / {num2}?"
-    elif operation == '*':
+    elif operation == "multiplication" or operation == "m":
         correct_answer = num1 * num2
-        question = f"What is {num1} * {num2}?"
-    elif operation == '/':
+        question = f"what is {num1} x {num2}?"
+    elif operation == "division" or operation == "d":
         correct_answer = num1 / num2
         question = f"What is {num1} / {num2}?"
 
     print(question)
+
     # get user choice
     user_answer = float(input("Your answer: "))
-    if user_answer - correct_answer < 0.01:
+    if abs(user_answer - correct_answer) < 0.01:
         print("Correct!")
+        return True
     else:
         print(f"Wrong! The correct answer is {correct_answer:.2f}.")
+        return False
 
 # Main routine
+
+
 print()
 print("✈️ Basic Math ✈️")
 print()
@@ -167,28 +163,25 @@ if num_questions == "":
 if mode == "infinite":
     num_questions += 1
 
+while mode == "infinite" and num_questions == "50":
+    yes_no("Do you want to continue?")
+    if end_game: "yes"
+    break
+
+
 # check if the user want to do basic game settings
 default_game = yes_no("Do you want to keep the basic game settings?")
-if default_game == "yes":
-    operation_list = ["+", "-", "*", "/"]
-    operation = random.choice(operation_list)
-
-# allow users to customise operation if they wish
-else:
-    quiz_list = ["multiplication", "m", "division", "d", "subtraction",
-                 "s", "addition", "a"]
-
-    user_choice = string_checker("Choose: ", quiz_list)
-    print("You chose: ", user_choice)
-
-# if user chose to customise their operation
-# only give them one operation
 if default_game == "no":
-    operation = user_choice
-
-    questions_asked += 1
-    if generate_question(operation):
-        correct_answers += 1
+    operation = {
+        "m": "multiplication",
+        "d": "division",
+        "s": "subtraction",
+        "a": "addition"
+    }
+    operations = string_checker("Choose operation (m, d, s, a): ", operation)
+    operation = operations
+else:
+    operation = random.choice(["addition", "subtraction", "multiplication", "division"])
 
 
 # Game start here
@@ -200,23 +193,11 @@ while questions_asked < num_questions:
         game_heading = f"\n✈️✈️Question: {questions_asked + 1} of {num_questions}✈️✈️"
 
     print(game_heading)
-
-    # get user choice
-    user_answer = float(input("Your answer: "))
-    if user_answer - correct_answer < 0.01:
-        print("Correct!")
-    else:
-        print(f"Wrong! The correct answer is {correct_answer:.2f}.")
-    if questions_asked >= num_questions:
+    if generate_question:
+        correct_answers += 1
+    questions_asked += 1
+    if not mode == "infinite" and questions_asked >= num_questions:
         break
 
-    # check that they don't want to quit
-    if user_answer == "xxx":
-        # set end_game to use so that outer loop can be
-        end_game = "yes"
-        break
 
-# How do I continue this game??????????????
-print("What do i do next????")
-
-# Game history / statistics area
+# Game statistics
