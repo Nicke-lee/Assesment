@@ -74,7 +74,8 @@ def int_check(question, low=None, high=None, exit_code=None):
                 print(error)
 
             # if response is valid, return it
-            return response
+            else:
+                return response
 
         except ValueError:
             print(error)
@@ -112,7 +113,6 @@ def generate_question():
     elif operation == "division" or operation == "d":
         correct_answer = num1 / num2
         question = f"What is {num1} / {num2}?"
-
     print(question)
 
     # get user choice
@@ -163,11 +163,6 @@ if num_questions == "":
 if mode == "infinite":
     num_questions += 1
 
-while mode == "infinite" and num_questions == "50":
-    yes_no("Do you want to continue?")
-    if end_game: "yes"
-    break
-
 
 # check if the user want to do basic game settings
 default_game = yes_no("Do you want to keep the basic game settings?")
@@ -193,11 +188,9 @@ while questions_asked < num_questions:
         game_heading = f"\n✈️✈️Question: {questions_asked + 1} of {num_questions}✈️✈️"
 
     print(game_heading)
-    if generate_question:
-        correct_answers += 1
-    questions_asked += 1
+
     if not mode == "infinite" and questions_asked >= num_questions:
         break
 
-
 # Game statistics
+
