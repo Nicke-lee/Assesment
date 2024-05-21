@@ -96,7 +96,7 @@ def string_checker(question, valid_ans):
 # Generate questions and checks if answer is correct
 
 
-def generate_question():
+def generate_question(operation):
     # Generate two random numbers
     num1 = random.randint(1, 10)
     num2 = random.randint(1, 10)
@@ -157,11 +157,7 @@ feedback = ""
 
 if num_questions == "":
     mode = "infinite"
-    num_questions = 5
-
-# if user are in infinite mode, increase number of rounds!
-if mode == "infinite":
-    num_questions += 1
+    # print("Infinite mode selected")
 
 
 # check if the user want to do basic game settings
@@ -173,24 +169,36 @@ if default_game == "no":
         "s": "subtraction",
         "a": "addition"
     }
-    operations = string_checker("Choose operation (m, d, s, a): ", operation)
-    operation = operations
+    chosen_operation = string_checker("Choose operation (m, d, s, a): ", operation)
+    operation = operation[chosen_operation]
 else:
     operation = random.choice(["addition", "subtraction", "multiplication", "division"])
 
-
 # Game start here
-while questions_asked < num_questions:
-    # Rounds heading (base on mode)
+while mode == "infinite" or questions_asked < num_questions:
     if mode == "infinite":
-        game_heading = f"\n✈️✈️Question: {questions_asked + 1} (Infinite mode)✈️✈️"
+        game_heading = f"\n✈️✈️ Question: {questions_asked + 1} (Infinite mode) ✈️✈️"
     else:
-        game_heading = f"\n✈️✈️Question: {questions_asked + 1} of {num_questions}✈️✈️"
-
+        game_heading = f"\n✈️✈️ Question: {questions_asked + 1} of {num_questions} ✈️✈️"
     print(game_heading)
 
-    if not mode == "infinite" and questions_asked >= num_questions:
+    if generate_question(operation):
+        correct_answers += 1
+    questions_asked += 1
+
+    if mode != "infinite" and questions_asked >= num_questions:
         break
 
 # Game statistics
+see_history = yes_no("\nDo you want to see the game history? (y/n) ")
+if see_history == "yes":
+    for item in game_history:
+        print(item)
 
+percent_correct = (correct_answers / questions_asked) * 100
+print("\n🍭🍭🍭 Game Statistics 🍭🍭🍭")
+print(f"Total Questions: {questions_asked}, "
+      f"Correct Answers: {correct_answers}, "
+      f"Accuracy: {percent_correct:.2f}%")
+
+print("Thank you for playing")
