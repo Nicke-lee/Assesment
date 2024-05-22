@@ -7,6 +7,8 @@ def yes_no(question):
     while True:
         response = input(question).lower()
 
+        if response == "xxx":
+            return "exit"
         # check user response, question
         # repeats if users don't enter yes / no
         if response == "yes" or response == "y":
@@ -88,6 +90,8 @@ def string_checker(question, valid_ans):
     error = f"Please enter a valid option from the following list: {valid_ans}"
     while True:
         response = input(question).lower()
+        if response == "xxx":
+            return "exit"
         if response in valid_ans:
             return response
         print(error)
@@ -111,18 +115,27 @@ def generate_question(operation):
         correct_answer = num1 * num2
         question = f"what is {num1} x {num2}?"
     elif operation == "division" or operation == "d":
+        num1 = num1 * num2
         correct_answer = num1 / num2
         question = f"What is {num1} / {num2}?"
     print(question)
 
-    # get user choice
-    user_answer = float(input("Your answer: "))
+    while True:
+        user_input = input("Your answer: ")
+        if user_input.lower() == "xxx":
+            return "exit", None, None, None
+        try:
+            user_answer = float(user_input)
+            break
+        except ValueError:
+            print("Please enter a valid number.")
+
     if abs(user_answer - correct_answer) < 0.01:
         print("Correct!")
-        return True
+        return True, question, user_answer, correct_answer
     else:
         print(f"Wrong! The correct answer is {correct_answer:.2f}.")
-        return False
+        return False, question, user_answer, correct_answer
 
 # Main routine
 
@@ -142,12 +155,18 @@ want_instructions = yes_no("Do you want to read the instructions? ").lower()
 if want_instructions == "yes":
     instructions()
 
+if want_instructions == "exit":
+    print("🐔 You chickened out! 🐔")
+    exit()
 
 # Ask user for number of rounds / infinite mode
 num_questions = int_check("How many questions would you like to be asked? ,"
                           "<enter> for infinite: ",
                           low=1, exit_code="")
 
+if num_questions == "exit":
+    print("🐔 You chickened out! 🐔")
+    exit()
 
 # Initialise game variables
 mode = "regular"
@@ -170,6 +189,9 @@ if default_game == "no":
         "a": "addition"
     }
     chosen_operation = string_checker("Choose operation (m, d, s, a): ", operation)
+    if chosen_operation == "exit":
+        print("🐔 You chickened out! 🐔")
+        exit()
     operation = operation[chosen_operation]
 else:
     operation = random.choice(["addition", "subtraction", "multiplication", "division"])
@@ -182,9 +204,21 @@ while mode == "infinite" or questions_asked < num_questions:
         game_heading = f"\n✈️✈️ Question: {questions_asked + 1} of {num_questions} ✈️✈️"
     print(game_heading)
 
-    if generate_question(operation):
+    result, question, user_answer, correct_answer = generate_question(operation)
+    if result == "exit":
+        print("Game exited.")
+        break
+
+    if result:
         correct_answers += 1
     questions_asked += 1
+
+    game_history.append({
+        "Question": question,
+        "User Answer": user_answer,
+        "Correct Answer": correct_answer,
+        "Result": "Correct" if result else "Incorrect"
+    })
 
     if mode != "infinite" and questions_asked >= num_questions:
         break
@@ -192,13 +226,19 @@ while mode == "infinite" or questions_asked < num_questions:
 # Game statistics
 see_history = yes_no("\nDo you want to see the game history? (y/n) ")
 if see_history == "yes":
-    for item in game_history:
-        print(item)
+    for idx, item in enumerate(game_history, start=1):
+        print(f"Q{idx}: {item['Question']}")
+        if item["Result"] == "Correct":
+            print("You answered correctly.")
+        else:
+            print(f"You answered {item['User Answer']}. Correct answer was {item['Correct Answer']:.2f}.")
 
 percent_correct = (correct_answers / questions_asked) * 100
 print("\n🍭🍭🍭 Game Statistics 🍭🍭🍭")
-print(f"Total Questions: {questions_asked}, "
-      f"Correct Answers: {correct_answers}, "
-      f"Accuracy: {percent_correct:.2f}%")
+print(f"Total Questions: {questions_asked}, Correct Answers: {correct_answers}, Accuracy: {percent_correct:.2f}%")
 
 print("Thank you for playing")
+
+
+# Generate division questions where the answers are always integers.
+# Exit code does not work properly when typed in by number of questions
