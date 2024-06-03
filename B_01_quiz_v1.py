@@ -28,7 +28,7 @@ To begin, you choose the number of questions you would like
 to be asked. Press <enter> for infinite. 
 
 Then you may either customise the operation, or go with the
-default game. (where all operations are included)
+default quiz. (where a random operation is chosen)
 Answer the questions, aiming to get as many correct as possible.
 If you get one wrong, the computer will show the correct answer.
 
@@ -144,7 +144,7 @@ print()
 print("✈️ Basic Math ✈️")
 print()
 
-game_history = []
+quiz_history = []
 questions_asked = 0
 correct_answers = 0
 
@@ -180,8 +180,8 @@ if num_questions == "":
 
 
 # check if the user want to do basic game settings
-default_game = yes_no("Do you want to keep the basic game settings?")
-if default_game == "no":
+default_quiz = yes_no("Do you want to keep the basic quiz settings?")
+if default_quiz == "no":
     operation = {
         "m": "multiplication",
         "d": "division",
@@ -189,9 +189,6 @@ if default_game == "no":
         "a": "addition"
     }
     chosen_operation = string_checker("Choose operation (m, d, s, a): ", operation)
-    if chosen_operation == "exit":
-        print("🐔 You chickened out! 🐔")
-        exit()
     operation = operation[chosen_operation]
 else:
     operation = random.choice(["addition", "subtraction", "multiplication", "division"])
@@ -204,6 +201,7 @@ while mode == "infinite" or questions_asked < num_questions:
         game_heading = f"\n✈️✈️ Question: {questions_asked + 1} of {num_questions} ✈️✈️"
     print(game_heading)
 
+    # let the users leave infinite mode
     result, question, user_answer, correct_answer = generate_question(operation)
     if result == "exit":
         print("Game exited.")
@@ -213,7 +211,7 @@ while mode == "infinite" or questions_asked < num_questions:
         correct_answers += 1
     questions_asked += 1
 
-    game_history.append({
+    quiz_history.append({
         "Question": question,
         "User Answer": user_answer,
         "Correct Answer": correct_answer,
@@ -224,21 +222,20 @@ while mode == "infinite" or questions_asked < num_questions:
         break
 
 # Game statistics
-see_history = yes_no("\nDo you want to see the game history? (y/n) ")
+see_history = yes_no("\nDo you want to see the quiz history? (y/n) ")
 if see_history == "yes":
-    for idx, item in enumerate(game_history, start=1):
+    for idx, item in enumerate(quiz_history, start=1):
         print(f"Q{idx}: {item['Question']}")
         if item["Result"] == "Correct":
             print("You answered correctly.")
         else:
             print(f"You answered {item['User Answer']}. Correct answer was {item['Correct Answer']:.2f}.")
 
-percent_correct = (correct_answers / questions_asked) * 100
-print("\n🍭🍭🍭 Game Statistics 🍭🍭🍭")
-print(f"Total Questions: {questions_asked}, Correct Answers: {correct_answers}, Accuracy: {percent_correct:.2f}%")
+    percent_correct = (correct_answers / questions_asked) * 100
+    print("\n🍭🍭🍭 Game Statistics 🍭🍭🍭")
+    print(f"Total Questions: {questions_asked}, Correct Answers: {correct_answers}, Accuracy: {percent_correct:.2f}%")
 
-print("Thank you for playing")
+    print("Thank you for playing")
 
-
-# Generate division questions where the answers are always integers.
 # Exit code does not work properly when typed in by number of questions
+# Game continues even when xxx is placed in default game settings
