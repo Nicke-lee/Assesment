@@ -6,9 +6,6 @@ import random
 def yes_no(question):
     while True:
         response = input(question).lower()
-
-        if response == "xxx":
-            return "exit"
         # check user response, question
         # repeats if users don't enter yes / no
         if response == "yes" or response == "y":
@@ -155,24 +152,15 @@ want_instructions = yes_no("Do you want to read the instructions? ").lower()
 if want_instructions == "yes":
     instructions()
 
-if want_instructions == "exit":
-    print("🐔 You chickened out! 🐔")
-    exit()
-
 # Ask user for number of rounds / infinite mode
 num_questions = int_check("How many questions would you like to be asked? ,"
                           "<enter> for infinite: ",
                           low=1, exit_code="")
 
-if num_questions == "exit":
-    print("🐔 You chickened out! 🐔")
-    exit()
-
 # Initialise game variables
 mode = "regular"
 questions_asked = 0
 end_game = "no"
-feedback = ""
 
 if num_questions == "":
     mode = "infinite"
@@ -180,7 +168,7 @@ if num_questions == "":
 
 
 # check if the user want to do basic game settings
-default_quiz = yes_no("Do you want to keep the basic quiz settings?")
+default_quiz = yes_no(f"Do you want a random operation to be chosen for you?")
 if default_quiz == "no":
     operation = {
         "m": "multiplication",
@@ -188,12 +176,13 @@ if default_quiz == "no":
         "s": "subtraction",
         "a": "addition"
     }
+
     chosen_operation = string_checker("Choose operation (m, d, s, a): ", operation)
     operation = operation[chosen_operation]
 else:
     operation = random.choice(["addition", "subtraction", "multiplication", "division"])
 
-# Game start here
+# quiz start here
 while mode == "infinite" or questions_asked < num_questions:
     if mode == "infinite":
         game_heading = f"\n✈️✈️ Question: {questions_asked + 1} (Infinite mode) ✈️✈️"
@@ -204,7 +193,6 @@ while mode == "infinite" or questions_asked < num_questions:
     # let the users leave infinite mode
     result, question, user_answer, correct_answer = generate_question(operation)
     if result == "exit":
-        print("Game exited.")
         break
 
     if result:
@@ -221,21 +209,30 @@ while mode == "infinite" or questions_asked < num_questions:
     if mode != "infinite" and questions_asked >= num_questions:
         break
 
+# Quiz loop ends here
 # Game statistics
-see_history = yes_no("\nDo you want to see the quiz history? (y/n) ")
-if see_history == "yes":
-    for idx, item in enumerate(quiz_history, start=1):
-        print(f"Q{idx}: {item['Question']}")
-        if item["Result"] == "Correct":
-            print("You answered correctly.")
-        else:
-            print(f"You answered {item['User Answer']}. Correct answer was {item['Correct Answer']:.2f}.")
 
-    percent_correct = (correct_answers / questions_asked) * 100
-    print("\n🍭🍭🍭 Game Statistics 🍭🍭🍭")
-    print(f"Total Questions: {questions_asked}, Correct Answers: {correct_answers}, Accuracy: {percent_correct:.2f}%")
+# check the user have answered at least one question
+if questions_asked > 0:
 
-    print("Thank you for playing")
+    # Game history / statistics area
+    see_history = yes_no("\nDo you want to see the quiz history? (y/n) ")
+    if see_history == "yes":
+        question_number = 1
+        for item in quiz_history:
+            print(f"{question_number}: {item['Question']}")
+            if item["Result"] == "Correct":
+                print("You answered correctly.")
+            else:
+                print(f"You answered {item['User Answer']}. Correct answer was {item['Correct Answer']:.2f}.")
+            question_number += 1
 
-# Exit code does not work properly when typed in by number of questions
-# Game continues even when xxx is placed in default game settings
+        percent_correct = (correct_answers / questions_asked) * 100
+        print("\n🍭🍭🍭 Game Statistics 🍭🍭🍭")
+        print(
+            f"Total Questions: {questions_asked}, Correct Answers: {correct_answers}, Accuracy: {percent_correct:.2f}%")
+
+        print("Thank you for playing")
+
+
+
